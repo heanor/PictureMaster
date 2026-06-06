@@ -6,12 +6,9 @@
     <title>看图大王 - 专业的 macOS 看图软件</title>
     <link rel="icon" type="image/png" href="img/app icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
         .gradient-bg {
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
@@ -162,7 +159,7 @@
             border-radius: 16px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            z-index: 10;
+            z-index: 999;
         }
         .dropdown-menu.show {
             display: block;
@@ -459,7 +456,7 @@
 
     <section id="download" class="py-24 px-6 bg-white">
         <div class="max-w-4xl mx-auto text-center">
-            <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-12 md:p-16 relative overflow-hidden">
+            <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-12 md:p-16 relative">
                 <div class="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
                 <div class="absolute bottom-0 right-0 w-80 h-80 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
                 <div class="relative z-10">
@@ -467,7 +464,7 @@
                         立即开始使用
                     </h2>
                     <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-                        免费试用 14 天，体验全部功能，无需信用卡
+                        完全免费，无限制使用，体验全部功能
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <div class="relative w-full sm:w-auto">
