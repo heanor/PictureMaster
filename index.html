@@ -312,7 +312,7 @@
                 </p>
             </div>
             <div class="relative overflow-hidden rounded-3xl shadow-xl border border-gray-200">
-                <video id="videoPlayer" class="w-full object-cover bg-transparent" style="aspect-ratio: 920/576; transform: scale(1.01)" loop muted playsinline autoplay>
+                <video id="videoPlayer" class="w-full object-cover bg-transparent" style="aspect-ratio: 920/576; transform: scale(1.01)" loop muted playsinline autoplay preload="auto">
                     <source src="video/speed.mp4" type="video/mp4">
                 </video>
             </div>
@@ -597,6 +597,30 @@
             compare: '并排对比多张图片，支持放大缩小同步，轻松找出最佳照片。',
             sidebar: '智能管理照片库，侧边栏快速访问收藏和常用文件夹，高效组织你的图片。'
         };
+        
+        // 预加载视频缓存
+        const videoCache = {};
+        
+        // 预加载所有视频
+        function preloadVideos() {
+            Object.keys(videoSources).forEach(key => {
+                if (key !== 'speed') { // speed已经在播放了
+                    const video = document.createElement('video');
+                    video.src = videoSources[key];
+                    video.preload = 'auto';
+                    video.muted = true;
+                    videoCache[key] = video;
+                    // 触发加载
+                    video.load();
+                }
+            });
+        }
+        
+        // 页面加载完成后预加载视频
+        window.addEventListener('load', () => {
+            // 延迟一会儿再预加载，让页面先完整加载
+            setTimeout(preloadVideos, 2000);
+        });
         
         function switchVideo(tab) {
             // 更新视频源
