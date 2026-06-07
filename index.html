@@ -687,8 +687,8 @@
         // 下载版本
         function downloadVersion(version) {
             closeAllDropdowns();
-            // 这里可以添加实际的下载逻辑
-            alert(`正在下载 ${version === 'x64' ? 'Mac x64 (Intel)' : 'Mac ARM64 (Apple Silicon)'} 版本...`);
+            // 跳转到百度网盘下载链接
+            window.open('https://pan.baidu.com/share/init?surl=bHs6--SJM5QeCFc7seCQ6g&pwd=auk8', '_blank');
         }
     </script>
 </body>
