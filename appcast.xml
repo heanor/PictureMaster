@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+<channel>
+	<title>看图大王更新</title>
+	<item>
+		<title>版本 1.1</title>
+		<sparkle:shortVersionString>1.1</sparkle:shortVersionString>
+		<sparkle:version>2</sparkle:version>
+		<description><![CDATA[
+			<h2>看图大王 1.1 更新内容</h2>
+			<ul>
+				<li>修复二次打开大图模糊问题</li>
+				<li>优化内存释放机制</li>
+				<li>改进状态机复位时序</li>
+			</ul>
+		]]></description>
+		<pubDate>Mon, 08 Jun 2025 12:00:00 +0800</pubDate>
+		<enclosure url="https://picturemaster.onrender.com/downloads/看图大王-1.1.zip"
+				   sparkle:edSignature="PLACEHOLDER"
+				   length="0"
+				   type="application/octet-stream"/>
+	</item>
+</channel>
+</rss>
