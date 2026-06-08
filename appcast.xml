@@ -2,29 +2,42 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
 <channel>
 	<title>看图大王更新</title>
+
+	<!-- ============================================ -->
+	<!--  Apple Silicon (M1/M2/M3) 版本              -->
+	<!--  下次更新时改下面 3 处 + 下载链接即可        -->
+	<!-- ============================================ -->
 	<item>
-		<title>版本 1.2</title>
-		
-		<!-- 显示给用户看的版本文字 -->
-		<sparkle:shortVersionString>1.2</sparkle:shortVersionString>
-		
-		<!-- 版本号：代码比对这个数字，必须比 App 里的 CFBundleVersion 大 -->
-		<sparkle:version>3</sparkle:version>
-		
-		<!-- 更新内容描述，支持 HTML -->
+		<title>版本 1.2 (Apple Silicon)</title>              <!-- 标题含 "Apple Silicon"，代码靠这个匹配架构 -->
+		<sparkle:version>3</sparkle:version>                 <!-- 版本号，必须 > Info.plist 里的 CFBundleVersion -->
+		<sparkle:shortVersionString>1.2</sparkle:shortVersionString> <!-- 弹窗显示给用户看的版本文字 -->
 		<description><![CDATA[
-			<h2>看图大王 1.1 更新内容</h2>
+			<h2>看图大王 1.2 更新内容</h2>
 			<ul>
 				<li>修复二次打开大图模糊问题</li>
 				<li>优化内存释放机制</li>
 			</ul>
 		]]></description>
-		<pubDate>Mon, 08 Jun 2026 12:00:00 +0800</pubDate>
-		
-		<!-- 下载地址：zip 文件必须真实存在于此 URL -->
-		<enclosure url="https://picturemaster.onrender.com/downloads/看图大王-1.1.zip"
-				   sparkle:edSignature="bbIALi0sDPFN0OEGQXQQlB0Sv1ru5ZQXTmvBeJR6uMPeaOarRUbblz1i4hw+eWcj99GTvcxdRFLOfQDzjYJaDw=="
-				   length="4876416"
+		<enclosure url="https://picturemaster.onrender.com/downloads/看图大王-1.2-arm64.zip"
+				   type="application/octet-stream"/>
+	</item>
+
+	<!-- ============================================ -->
+	<!--  Intel 版本                                  -->
+	<!--  sparkle:version 两处要保持一致              -->
+	<!-- ============================================ -->
+	<item>
+		<title>版本 1.2 (Intel)</title>                      <!-- 标题含 "Intel"，代码靠这个匹配架构 -->
+		<sparkle:version>3</sparkle:version>                 <!-- 版本号，必须 > Info.plist 里的 CFBundleVersion -->
+		<sparkle:shortVersionString>1.2</sparkle:shortVersionString> <!-- 弹窗显示给用户看的版本文字 -->
+		<description><![CDATA[
+			<h2>看图大王 1.2 更新内容</h2>
+			<ul>
+				<li>修复二次打开大图模糊问题</li>
+				<li>优化内存释放机制</li>
+			</ul>
+		]]></description>
+		<enclosure url="https://picturemaster.onrender.com/downloads/看图大王-1.2-intel.zip"
 				   type="application/octet-stream"/>
 	</item>
 </channel>
