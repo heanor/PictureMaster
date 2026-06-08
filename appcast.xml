@@ -10,6 +10,8 @@
 		
 		<!-- 版本号：代码比对这个数字，必须比 App 里的 CFBundleVersion 大 -->
 		<sparkle:version>3</sparkle:version>
+		
+		<!-- 更新内容描述，支持 HTML -->
 		<description><![CDATA[
 			<h2>看图大王 1.1 更新内容</h2>
 			<ul>
@@ -18,6 +20,7 @@
 			</ul>
 		]]></description>
 		<pubDate>Mon, 08 Jun 2026 12:00:00 +0800</pubDate>
+		
 		<!-- 下载地址：zip 文件必须真实存在于此 URL -->
 		<enclosure url="https://picturemaster.onrender.com/downloads/看图大王-1.1.zip"
 				   sparkle:edSignature="bbIALi0sDPFN0OEGQXQQlB0Sv1ru5ZQXTmvBeJR6uMPeaOarRUbblz1i4hw+eWcj99GTvcxdRFLOfQDzjYJaDw=="
