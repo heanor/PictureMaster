@@ -8,9 +8,9 @@
 	<!--  下次更新时改下面 3 处 + 下载链接即可        -->
 	<!-- ============================================ -->
 	<item>
-		<title>版本 1.2 (Apple Silicon)</title>              <!-- 标题含 "Apple Silicon"，代码靠这个匹配架构 -->
-		<sparkle:version>3</sparkle:version>                 <!-- 版本号，必须 > Info.plist 里的 CFBundleVersion -->
-		<sparkle:shortVersionString>1.2</sparkle:shortVersionString> <!-- 弹窗显示给用户看的版本文字 -->
+		<title>版本 1.1 (Apple Silicon)</title>              <!-- 标题含 "Apple Silicon"，代码靠这个匹配架构 -->
+		<sparkle:version>2</sparkle:version>                 <!-- 版本号，必须 > Info.plist 里的 CFBundleVersion -->
+		<sparkle:shortVersionString>1.1</sparkle:shortVersionString> <!-- 弹窗显示给用户看的版本文字 -->
 		<description><![CDATA[
 			<h2>看图大王 1.2 更新内容</h2>
 			<ul>
@@ -27,9 +27,9 @@
 	<!--  sparkle:version 两处要保持一致              -->
 	<!-- ============================================ -->
 	<item>
-		<title>版本 1.2 (Intel)</title>                      <!-- 标题含 "Intel"，代码靠这个匹配架构 -->
-		<sparkle:version>3</sparkle:version>                 <!-- 版本号，必须 > Info.plist 里的 CFBundleVersion -->
-		<sparkle:shortVersionString>1.2</sparkle:shortVersionString> <!-- 弹窗显示给用户看的版本文字 -->
+		<title>版本 1.1 (Intel)</title>                      <!-- 标题含 "Intel"，代码靠这个匹配架构 -->
+		<sparkle:version>2</sparkle:version>                 <!-- 版本号，必须 > Info.plist 里的 CFBundleVersion -->
+		<sparkle:shortVersionString>1.1</sparkle:shortVersionString> <!-- 弹窗显示给用户看的版本文字 -->
 		<description><![CDATA[
 			<h2>看图大王 1.2 更新内容</h2>
 			<ul>
