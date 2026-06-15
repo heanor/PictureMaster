@@ -181,6 +181,84 @@
             height: 1px;
             background: #e5e7eb;
         }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            max-width: 640px;
+            width: 100%;
+            max-height: 85vh;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 1.5rem;
+            line-height: 1;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+
+        @media (max-width: 640px) {
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body class="scroll-smooth bg-white text-gray-900">
@@ -267,6 +345,9 @@
                             <span>了解更多</span>
                         </a>
                     </div>
+                    <p id="solutionLink" class="mt-6 text-center sm:text-left text-sm text-blue-600 hover:text-blue-700 underline cursor-pointer">
+                        「文件已损坏的解决办法」详细解决办法
+                    </p>
                     <div class="flex items-center justify-center lg:justify-start space-x-8 mt-10 pt-8 border-t border-gray-200/60">
                         <div class="text-center">
                             <div class="text-3xl font-bold text-gray-900">20+</div>
@@ -579,6 +660,55 @@
             </div>
         </div>
     </footer>
+
+    <div id="solutionModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <div class="modal-body">
+                <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">Mac 版 安装损坏解决办法</h2>
+
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #2563eb; margin-top: 1.5rem; margin-bottom: 1rem;">macOS 安装步骤</h3>
+                <p style="color: #4b5563; line-height: 1.75; margin-bottom: 0.5rem;">从启动台里搜索「终端」，并打开「终端」</p>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; color: #1f2937; margin-top: 1.25rem; margin-bottom: 0.75rem;">一、复制代码</h4>
+                <ol style="color: #4b5563; line-height: 1.8; margin-left: 1.5rem; margin-bottom: 0.5rem;">
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>打开终端复制代码（注意结尾有个空格要一起复制），代码复制完成后不要回车</li>
+                </ol>
+                <div style="margin: 0.5rem 0 0.75rem 1.5rem;">
+                    <img src="img/zd.png" alt="操作示例" style="max-width: 60%; max-height: 180px; width: auto; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                </div>
+                <div style="background: #111827; color: #e5e7eb; border-radius: 0.5rem; margin-bottom: 0.5rem; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <span style="font-size: 0.75rem; color: #9ca3af; font-family: 'SF Mono', 'Menlo', monospace;">terminal</span>
+                        <button id="copyBtn" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #e5e7eb; padding: 0.25rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: all 0.2s;">复制</button>
+                    </div>
+                    <div id="codeBlock" style="padding: 0.75rem 1rem; font-family: 'SF Mono', 'Menlo', monospace; font-size: 0.875rem; overflow-x: auto;">xattr -rc&nbsp;</div>
+                </div>
+                <p style="color: #9ca3af; line-height: 1.75; margin-bottom: 0.75rem; font-size: 0.875rem;">
+                    如果上面代码失败了，可以把代码换成：<code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.75rem; color: #6b7280;">sudo /usr/bin/xattr -rc </code>（结尾仍然需要有空格一起复制）。
+                </p>
+
+                <ol style="color: #4b5563; line-height: 1.8; margin-left: 1.5rem; margin-bottom: 0.75rem; margin-top: 0.5rem;" start="2">
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>复制代码粘贴到「终端」（注意结尾有个空格）</li>
+                </ol>
+                <div style="margin: 0.5rem 0 1rem 1.5rem;">
+                    <img src="img/shell.png" alt="终端示例" style="max-width: 100%; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                </div>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; color: #1f2937; margin-top: 1.25rem; margin-bottom: 0.75rem;">将「看图大王客户端」拖拽到「终端」里</h4>
+                <ol style="color: #4b5563; line-height: 1.8; margin-left: 1.5rem; margin-bottom: 0.75rem;">
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>从「应用程序」找到「看图大王客户端」，拖拽到「终端」中，用以获得客户端的安装路径；</li>
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>然后按 回车/Enter 键运行。</li>
+                </ol>
+                <div style="margin: 0.5rem 0 1rem 1.5rem;">
+                    <video autoplay loop muted playsinline style="max-width: 100%; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                        <source src="video/insta.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 视频切换功能
         const videoPlayer = document.getElementById('videoPlayer');
@@ -690,6 +820,75 @@
             // 跳转到百度网盘下载链接
             window.open('https://pan.baidu.com/share/init?surl=bHs6--SJM5QeCFc7seCQ6g&pwd=auk8', '_blank');
         }
+
+        // 解决办法弹窗
+        const solutionLink = document.getElementById('solutionLink');
+        const solutionModal = document.getElementById('solutionModal');
+        const modalClose = document.getElementById('modalClose');
+
+        function openModal() {
+            solutionModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            solutionModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        solutionLink.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openModal();
+        });
+
+        modalClose.addEventListener('click', closeModal);
+
+        solutionModal.addEventListener('click', (e) => {
+            if (e.target === solutionModal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && solutionModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // 复制代码
+        const copyBtn = document.getElementById('copyBtn');
+        const codeBlock = document.getElementById('codeBlock');
+
+        copyBtn.addEventListener('click', () => {
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制';
+                copyBtn.style.background = '#10b981';
+                copyBtn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'transparent';
+                    copyBtn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }, 1500);
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制';
+                copyBtn.style.background = '#10b981';
+                copyBtn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'transparent';
+                    copyBtn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }, 1500);
+            });
+        });
     </script>
 </body>
 </html>
