@@ -1,889 +1,894 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=1360" />
-<title>LocalMilestone · Mac 文件后悔药</title>
-<link rel="stylesheet" href="styles.css" />
-<link rel="icon" href="img/icon.png" type="image/png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>看图大王 - 专业的 macOS 看图软件</title>
+    <link rel="icon" type="image/png" href="img/app icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+        }
+        .hero-gradient {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f7ff 33%, #f5f0ff 66%, #f0f9ff 100%);
+            background-size: 400% 400%;
+            animation: mainGradient 12s ease infinite;
+        }
+
+        @keyframes mainGradient {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb1 10s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb2 12s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes floatOrb1 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(10%, 10%) scale(1.1);
+            }
+            50% {
+                transform: translate(5%, 15%) scale(1.05);
+            }
+            75% {
+                transform: translate(-5%, 10%) scale(1.12);
+            }
+        }
+
+        @keyframes floatOrb2 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(-10%, -10%) scale(1.08);
+            }
+            50% {
+                transform: translate(-5%, -15%) scale(1.15);
+            }
+            75% {
+                transform: translate(5%, -10%) scale(1.05);
+            }
+        }
+
+        .hero-gradient > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-gradient .extra-orb {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .hero-gradient .extra-orb:nth-child(2) {
+            top: 40%;
+            left: 5%;
+            animation: floatOrb3 15s ease-in-out infinite;
+        }
+
+        .hero-gradient .extra-orb:nth-child(3) {
+            bottom: 30%;
+            right: 15%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.06) 0%, transparent 70%);
+            animation: floatOrb4 18s ease-in-out infinite;
+        }
+
+        @keyframes floatOrb3 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(20%, -15%) scale(1.2);
+            }
+            66% {
+                transform: translate(10%, 10%) scale(0.9);
+            }
+        }
+
+        @keyframes floatOrb4 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(-15%, 20%) scale(1.1);
+            }
+            66% {
+                transform: translate(10%, -10%) scale(0.95);
+            }
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 8px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            z-index: 999;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 16px 24px;
+            text-align: left;
+            color: #1f2937;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dropdown-item:hover {
+            background: #f3f4f6;
+        }
+        .dropdown-divider {
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            max-width: 640px;
+            width: 100%;
+            max-height: 85vh;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 1.5rem;
+            line-height: 1;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+
+        @media (max-width: 640px) {
+            .modal-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body>
-
-<!-- =============== NAV =============== -->
-<header class="nav">
-  <div class="container nav-inner">
-    <div class="brand">
-      <img class="brand-mark" src="img/icon.png" alt="LocalMilestone">
-      <span class="brand-name">文件快照</span>
-      <span class="brand-tag">macOS 原生应用</span>
-    </div>
-    <nav class="nav-links">
-      <a href="#principle">原理</a>
-      <a href="#features">功能</a>
-      <a href="#preview">界面</a>
-      <a href="#privacy">隐私</a>
+<body class="scroll-smooth bg-white text-gray-900">
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-gray-200/60">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden">
+                        <img src="img/app icon.png" alt="看图大王" class="w-full h-full object-cover">
+                    </div>
+                    <span class="text-xl font-semibold text-gray-900">看图大王</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-600 hover:text-gray-900 transition-colors font-medium">功能</a>
+                    <a href="#screenshots" class="text-gray-600 hover:text-gray-900 transition-colors font-medium">截图</a>
+                    <a href="#download" class="text-gray-600 hover:text-gray-900 transition-colors font-medium">下载</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#download" class="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg shadow-blue-500/25">
+                        立即下载
+                    </a>
+                </div>
+            </div>
+        </div>
     </nav>
-    <a href="#download" class="btn btn-ghost">下载 →</a>
-  </div>
-</header>
 
-<!-- =============== 1. HERO =============== -->
-<section class="hero">
-  <div class="container hero-grid">
-    <div class="hero-text">
-      <div class="eyebrow">
-        <span class="dot"></span>
-        Swift + Rust (UniFFI) 混合架构
-      </div>
-      <h1 class="hero-title">
-        Mac 文件的<span class="hl">后悔药</span><br />
-        只存增量快照，<span class="hl">备份千百次也不占硬盘</span>
-      </h1>
-      <p class="hero-sub">
-        基于事件溯源的本地快照工具。完整保存最初的一份基准快照，后续所有改动仅在 SQLite 账本中记录<br />
-        一行行原子变更日志（ADD / MODIFY / DELETE / RENAME / MOVE）。连续备份 100 次也只占用几 KB。
-      </p>
-
-      <div class="hero-actions">
-        <div class="dropdown">
-          <a href="#" class="btn btn-primary dropdown-toggle">
-            <span class="btn-label">免费下载</span>
-            <span class="btn-sub">macOS</span>
-            <span class="dropdown-arrow">▼</span>
-          </a>
-          <div class="dropdown-menu">
-            <a href="https://pan.baidu.com/s/1jmM-uuubrsCYLFpYFIBR9g?pwd=aw5u" class="dropdown-item">Apple Silicon</a>
-            <a href="https://pan.baidu.com/s/1jmM-uuubrsCYLFpYFIBR9g?pwd=aw5u" class="dropdown-item">Intel</a>
-          </div>
+    <section class="hero-gradient pt-32 pb-20 px-6">
+        <div class="extra-orb"></div>
+        <div class="extra-orb"></div>
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div class="flex-1 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-blue-50 text-blue-700 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span class="text-sm font-medium">全新版本 v1.0 现已发布</span>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
+                        重新定义
+                        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            看图体验
+                        </span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        专为 macOS 设计的专业看图软件，支持 20+ 图片格式，极速加载，让你的图片浏览更高效。
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <div class="relative w-full sm:w-auto">
+                            <button id="downloadBtn" class="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-semibold text-lg hover:from-blue-600 hover:to-blue-700 transition-all shadow-xl shadow-blue-500/30 flex items-center justify-center space-x-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"></path>
+                                </svg>
+                                <span>下载 macOS 版</span>
+                                <svg id="dropdownIcon" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="dropdownMenu" class="dropdown-menu">
+                                <div class="dropdown-item" onclick="downloadVersion('x64')">
+                                    <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="font-semibold">Mac x64 (Intel)</div>
+                                        <div class="text-sm text-gray-500">适用于 Intel 处理器的 Mac</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-item" onclick="downloadVersion('arm64')">
+                                    <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="font-semibold">Mac ARM64 (Apple Silicon)</div>
+                                        <div class="text-sm text-gray-500">适用于 M 系列芯片的 Mac</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#features" class="w-full sm:w-auto px-8 py-4 bg-white text-gray-700 rounded-2xl font-semibold text-lg border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all flex items-center justify-center space-x-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 90 11-18 0 9 90 0118 0z"></path>
+                            </svg>
+                            <span>了解更多</span>
+                        </a>
+                    </div>
+                    <p id="solutionLink" class="mt-6 text-center sm:text-left text-sm text-blue-600 hover:text-blue-700 underline cursor-pointer">
+                        「文件已损坏的解决办法」详细解决办法
+                    </p>
+                    <div class="flex items-center justify-center lg:justify-start space-x-8 mt-10 pt-8 border-t border-gray-200/60">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-gray-900">20+</div>
+                            <div class="text-sm text-gray-500">支持格式</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-gray-900">10x</div>
+                            <div class="text-sm text-gray-500">更快加载</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-gray-900">无限画布</div>
+                            <div class="text-sm text-gray-500">自由浏览</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 relative">
+                    <div class="relative bg-white rounded-3xl shadow-2xl shadow-gray-300/50 border border-gray-200 overflow-hidden">
+                        <div class="bg-gray-100 px-4 py-3 flex items-center space-x-2 border-b border-gray-200">
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                        </div>
+                        <div class="p-0">
+                            <img src="img/Cover Image.jpg" alt="应用界面" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="absolute -top-8 -right-8 w-32 h-32 bg-blue-400/20 rounded-full blur-3xl"></div>
+                    <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-purple-400/20 rounded-full blur-3xl"></div>
+                </div>
+            </div>
         </div>
-        <a href="#principle" class="btn btn-text">查看原理 →</a>
-      </div>
+    </section>
 
-      <div class="hero-stats">
-        <div><b>1</b><span>份基准快照</span></div>
-        <div class="divider"></div>
-        <div><b>5</b><span>种原子操作</span></div>
-        <div class="divider"></div>
-        <div><b>~KB</b><span>每次增量</span></div>
-        <div class="divider"></div>
-        <div><b>0</b><span>云端上传</span></div>
-      </div>
+    <section id="videos" class="py-24 px-6 bg-gray-50">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-white text-blue-700 text-sm font-medium mb-4 shadow-sm">功能演示</span>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    直观体验核心功能
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    点击下方标签，观看功能视频演示
+                </p>
+            </div>
+            <div class="relative overflow-hidden rounded-3xl shadow-xl border border-gray-200">
+                <video id="videoPlayer" class="w-full object-cover bg-transparent" style="aspect-ratio: 920/576; transform: scale(1.01)" loop muted playsinline autoplay preload="auto">
+                    <source src="video/speed.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="mt-8 flex justify-center gap-3 md:gap-6">
+                <button onclick="switchVideo('speed')" class="video-tab active px-6 md:px-8 py-3 rounded-full font-medium text-lg md:text-xl transition-all bg-blue-500 text-white shadow-lg">
+                    极速性能
+                </button>
+                <button onclick="switchVideo('canvas')" class="video-tab px-6 md:px-8 py-3 rounded-full font-medium text-lg md:text-xl transition-all bg-gray-200 text-gray-800 hover:bg-gray-300">
+                    无限画布
+                </button>
+                <button onclick="switchVideo('compare')" class="video-tab px-6 md:px-8 py-3 rounded-full font-medium text-lg md:text-xl transition-all bg-gray-200 text-gray-800 hover:bg-gray-300">
+                    AB对比
+                </button>
+                <button onclick="switchVideo('sidebar')" class="video-tab px-6 md:px-8 py-3 rounded-full font-medium text-lg md:text-xl transition-all bg-gray-200 text-gray-800 hover:bg-gray-300">
+                    侧边栏
+                </button>
+            </div>
+            <div class="mt-8 text-center">
+                <p id="videoDescription" class="text-base text-gray-700 max-w-2xl mx-auto">
+                    用硬件底层语言编写，优化的渲染引擎，即使是超大尺寸的照片也能秒开，流畅浏览。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-24 px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium mb-4">核心功能</span>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    强大功能，简单易用
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    我们精心设计每一个功能，只为给你带来最好的看图体验
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card bg-white rounded-3xl p-8 border border-gray-200 shadow-sm transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">极速加载</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        用硬件底层语言编写，优化的渲染引擎，即使是超大尺寸的照片也能秒开，流畅浏览。
+                    </p>
+                </div>
+                <div class="feature-card bg-white rounded-3xl p-8 border border-gray-200 shadow-sm transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">全格式支持</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        支持 JPG、PNG、WebP、GIF、TIF、BMP、HEIC 等 20+ 种图片格式，无需转换直接查看。
+                    </p>
+                </div>
+                <div class="feature-card bg-white rounded-3xl p-8 border border-gray-200 shadow-sm transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 2v20h20V2H2z" opacity="0.3"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">无限画布</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        独特的无限画布浏览模式，自由拖拽、缩放、排列图片，带来全新的看图体验。
+                    </p>
+                </div>
+                <div class="feature-card bg-white rounded-3xl p-8 border border-gray-200 shadow-sm transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">添加收藏</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        一键收藏喜欢的照片到收藏栏，快速找到你最爱的图片，收藏管理更便捷。
+                    </p>
+                </div>
+                <div class="feature-card bg-white rounded-3xl p-8 border border-gray-200 shadow-sm transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">看图对比</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        并排对比多张图片，支持放大缩小同步，轻松找出最佳照片。
+                    </p>
+                </div>
+                <div class="feature-card bg-white rounded-3xl p-8 border border-gray-200 shadow-sm transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">原生体验</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        从底层窗口渲染到高频手势响应，100% 遵循 macOS 原生设计哲学，无多余内存空耗。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screenshots" class="py-24 px-6 gradient-bg">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-white text-blue-700 text-sm font-medium mb-4 shadow-sm">界面预览</span>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                    优雅的界面设计
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    简洁、现代、高效，每一个细节都为你精心打磨
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="bg-gray-100 px-4 py-3 flex items-center space-x-2 border-b border-gray-200">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    </div>
+                    <img src="img/ui-1.jpg" alt="图库视图" class="w-full">
+                </div>
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+                    <div class="bg-gray-100 px-4 py-3 flex items-center space-x-2 border-b border-gray-200">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    </div>
+                    <img src="img/ui-2.jpg" alt="单图视图" class="w-full">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="py-24 px-6 bg-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-12 md:p-16 relative">
+                <div class="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="absolute bottom-0 right-0 w-80 h-80 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+                <div class="relative z-10">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                        立即开始使用
+                    </h2>
+                    <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+                        完全免费，无限制使用，体验全部功能
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div class="relative w-full sm:w-auto">
+                            <button id="downloadBtn2" class="w-full px-10 py-5 bg-white text-gray-900 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-all shadow-xl flex items-center justify-center space-x-3">
+                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"></path>
+                                </svg>
+                                <span>下载 macOS 版</span>
+                                <svg id="dropdownIcon2" class="w-5 h-5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="dropdownMenu2" class="dropdown-menu">
+                                <div class="dropdown-item" onclick="downloadVersion('x64')">
+                                    <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="font-semibold">Mac x64 (Intel)</div>
+                                        <div class="text-sm text-gray-500">适用于 Intel 处理器的 Mac</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-item" onclick="downloadVersion('arm64')">
+                                    <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"></path>
+                                    </svg>
+                                    <div>
+                                        <div class="font-semibold">Mac ARM64 (Apple Silicon)</div>
+                                        <div class="text-sm text-gray-500">适用于 M 系列芯片的 Mac</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-8 border-t border-white/20">
+                        <div class="flex items-center justify-center space-x-6 md:space-x-10 text-blue-100">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>超大图稳开</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>内存超低耗</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-green-300" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>轻装超顺滑</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="bg-gray-50 border-t border-gray-200 py-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl overflow-hidden">
+                            <img src="img/app icon.png" alt="看图大王" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-xl font-semibold text-gray-900">看图大王</span>
+                    </div>
+                    <p class="text-gray-600 mb-6 max-w-sm">
+                        专为 macOS 设计的专业看图软件，让图片浏览更高效、更愉悦。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300 transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0.84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">产品</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">功能介绍</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">更新日志</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">定价方案</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">常见问题</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">公司</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">关于我们</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">联系我们</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">隐私政策</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 transition-colors">服务条款</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between">
+                <p class="text-gray-500 text-sm">© 2024 看图大王. 保留所有权利。</p>
+                <p class="text-gray-500 text-sm mt-4 md:mt-0">Designed for macOS</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="solutionModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">×</button>
+            <div class="modal-body">
+                <h2 style="font-size: 1.75rem; font-weight: 700; color: #111827; margin-bottom: 1.5rem;">Mac 版 安装损坏解决办法</h2>
+
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #2563eb; margin-top: 1.5rem; margin-bottom: 1rem;">macOS 安装步骤</h3>
+                <p style="color: #4b5563; line-height: 1.75; margin-bottom: 0.5rem;">从启动台里搜索「终端」，并打开「终端」</p>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; color: #1f2937; margin-top: 1.25rem; margin-bottom: 0.75rem;">一、复制代码</h4>
+                <ol style="color: #4b5563; line-height: 1.8; margin-left: 1.5rem; margin-bottom: 0.5rem;">
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>打开终端复制代码（注意结尾有个空格要一起复制），代码复制完成后不要回车</li>
+                </ol>
+                <div style="margin: 0.5rem 0 0.75rem 1.5rem;">
+                    <img src="img/zd.png" alt="操作示例" style="max-width: 60%; max-height: 180px; width: auto; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                </div>
+                <div style="background: #111827; color: #e5e7eb; border-radius: 0.5rem; margin-bottom: 0.5rem; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <span style="font-size: 0.75rem; color: #9ca3af; font-family: 'SF Mono', 'Menlo', monospace;">terminal</span>
+                        <button id="copyBtn" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: #e5e7eb; padding: 0.25rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: all 0.2s;">复制</button>
+                    </div>
+                    <div id="codeBlock" style="padding: 0.75rem 1rem; font-family: 'SF Mono', 'Menlo', monospace; font-size: 0.875rem; overflow-x: auto;">xattr -rc&nbsp;</div>
+                </div>
+                <p style="color: #9ca3af; line-height: 1.75; margin-bottom: 0.75rem; font-size: 0.875rem;">
+                    如果上面代码失败了，可以把代码换成：<code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.75rem; color: #6b7280;">sudo /usr/bin/xattr -rc </code>（结尾仍然需要有空格一起复制）。
+                </p>
+
+                <ol style="color: #4b5563; line-height: 1.8; margin-left: 1.5rem; margin-bottom: 0.75rem; margin-top: 0.5rem;" start="2">
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>复制代码粘贴到「终端」（注意结尾有个空格）</li>
+                </ol>
+                <div style="margin: 0.5rem 0 1rem 1.5rem;">
+                    <img src="img/shell.png" alt="终端示例" style="max-width: 100%; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                </div>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; color: #1f2937; margin-top: 1.25rem; margin-bottom: 0.75rem;">将「看图大王客户端」拖拽到「终端」里</h4>
+                <ol style="color: #4b5563; line-height: 1.8; margin-left: 1.5rem; margin-bottom: 0.75rem;">
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>从「应用程序」找到「看图大王客户端」，拖拽到「终端」中，用以获得客户端的安装路径；</li>
+                    <li><span style="display: inline-block; width: 8px; height: 8px; background: #2563eb; border-radius: 50%; margin-right: 8px; vertical-align: middle; position: relative; top: -1px;"></span>然后按 回车/Enter 键运行。</li>
+                </ol>
+                <div style="margin: 0.5rem 0 1rem 1.5rem;">
+                    <video autoplay loop muted playsinline style="max-width: 100%; border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+                        <source src="video/insta.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 软件界面截图 -->
-    <div class="hero-visual" aria-label="LocalMilestone 主界面">
-      <div class="app-screenshot">
-        <div class="app-titlebar">
-          <div class="app-dots">
-            <span></span><span></span><span></span>
-          </div>
-          <div class="app-title">LocalMilestone — 项目快照器</div>
-        </div>
-        <div class="app-content">
-          <!-- 左侧边栏 -->
-          <div class="app-sidebar">
-            <div class="app-sidebar-header">项目</div>
-            <div class="app-project-card active">
-              <div class="app-project-name">demo-web-app <span class="app-badge">当前</span></div>
-              <div class="app-project-path">~/Developer/demo-web-app</div>
-              <div class="app-project-meta"><span><strong>8</strong> 个版本</span><span><strong>142</strong> 个文件</span></div>
-            </div>
-            <div class="app-project-card">
-              <div class="app-project-name">mobile-commerce</div>
-              <div class="app-project-path">~/Projects/mobile-commerce</div>
-              <div class="app-project-meta"><span><strong>5</strong> 个版本</span><span><strong>89</strong> 个文件</span></div>
-            </div>
-            <button class="app-add-project">+ 添加新项目</button>
+    <script>
+        // 视频切换功能
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoTabs = document.querySelectorAll('.video-tab');
+        
+        const videoSources = {
+            speed: 'video/speed.mp4',
+            canvas: 'video/canvas.mp4',
+            compare: 'video/compare.mp4',
+            sidebar: 'video/sidebar.mp4'
+        };
+        
+        const videoDescriptions = {
+            speed: '用硬件底层语言编写，优化的渲染引擎，即使是超大尺寸的照片也能秒开，流畅浏览。',
+            canvas: '独特的无限画布浏览模式，自由拖拽、缩放、排列图片，带来全新的看图体验。',
+            compare: '并排对比多张图片，支持放大缩小同步，轻松找出最佳照片。',
+            sidebar: '智能管理照片库，侧边栏快速访问收藏和常用文件夹，高效组织你的图片。'
+        };
+        
+        // 预加载视频缓存
+        const videoCache = {};
+        
+        // 预加载所有视频
+        function preloadVideos() {
+            Object.keys(videoSources).forEach(key => {
+                if (key !== 'speed') { // speed已经在播放了
+                    const video = document.createElement('video');
+                    video.src = videoSources[key];
+                    video.preload = 'auto';
+                    video.muted = true;
+                    videoCache[key] = video;
+                    // 触发加载
+                    video.load();
+                }
+            });
+        }
+        
+        // 页面加载完成后预加载视频
+        window.addEventListener('load', () => {
+            // 延迟一会儿再预加载，让页面先完整加载
+            setTimeout(preloadVideos, 2000);
+        });
+        
+        function switchVideo(tab) {
+            // 更新视频源
+            videoPlayer.src = videoSources[tab];
+            videoPlayer.load();
+            
+            // 尝试播放
+            videoPlayer.play().catch(e => {
+                console.log('视频播放处理', e);
+            });
+            
+            // 更新描述文字
+            document.getElementById('videoDescription').textContent = videoDescriptions[tab];
+            
+            // 更新tab样式
+            videoTabs.forEach(t => {
+                t.classList.remove('active', 'bg-blue-500', 'text-white', 'shadow-lg');
+                t.classList.add('bg-gray-200', 'text-gray-800', 'hover:bg-gray-300');
+            });
+            
+            event.target.classList.add('active', 'bg-blue-500', 'text-white', 'shadow-lg');
+            event.target.classList.remove('bg-gray-200', 'text-gray-800', 'hover:bg-gray-300');
+        }
 
-            <div class="app-snapshot-section">
-              <div class="app-section-label">记录里程碑</div>
-              <div class="app-snapshot-card">
-                <textarea class="app-snapshot-input" placeholder="这个版本做了什么改动？例如：完成用户登录模块、修复首页加载慢的问题..."></textarea>
-                <div class="app-snapshot-meta">正在记录自 V8 以来的变更...</div>
-                <button class="app-btn-primary">📷 创建快照 V9</button>
-              </div>
-              <div class="app-model-card">
-                <div class="app-model-icon">🧠</div>
-                <div class="app-model-info">
-                  <div class="app-model-name">本地模型</div>
-                  <div class="app-model-detail">Model: gemma 4 (Active)</div>
-                </div>
-                <div class="app-model-status">● READY</div>
-              </div>
-            </div>
-          </div>
+        // 第一个下拉菜单
+        const downloadBtn = document.getElementById('downloadBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const dropdownIcon = document.getElementById('dropdownIcon');
 
-          <!-- 右侧时间轴 -->
-          <div class="app-main-panel">
-            <div class="app-panel-header">
-              <div class="app-panel-title">版本时间轴 <span class="app-version-count">共 8 个快照</span></div>
-              <div class="app-current-marker">● 当前工作区无未备份的文件</div>
-            </div>
-            <div class="app-timeline">
-              <div class="app-timeline-item is-current">
-                <div class="app-timeline-dot"></div>
-                <div class="app-version-card is-current">
-                  <div class="app-card-top">
-                    <span class="app-version-tag">V8 · HEAD</span>
-                    <span class="app-version-time">今天 14:32</span>
-                  </div>
-                  <div class="app-version-note">完成登录模块 OAuth2 接入，优化首页加载速度至 1.2s</div>
-                  <div class="app-change-stats">当前工作区已是最新，包含完整资产</div>
-                  <div class="app-card-actions">
-                    <button class="app-btn-ghost">📂 查看</button>
-                    <button class="app-btn-action">📥 导出</button>
-                  </div>
-                </div>
-              </div>
-              <div class="app-timeline-item">
-                <div class="app-timeline-dot"></div>
-                <div class="app-version-card">
-                  <div class="app-card-top">
-                    <span class="app-version-tag">V7</span>
-                    <span class="app-version-time">昨天 21:08</span>
-                  </div>
-                  <div class="app-version-note">重构组件目录结构，引入 TypeScript 严格模式</div>
-                  <div class="app-change-stats">
-                    <span class="stat-added">- 6 个将清里</span>
-                    <span class="stat-modified">~ 23 个将倒滚</span>
-                    <span class="stat-deleted">+ 4 个将补回</span>
-                  </div>
-                  <div class="app-card-actions">
-                    <button class="app-btn-ghost">📂 查看</button>
-                    <button class="app-btn-action">📥 导出</button>
-                  </div>
-                </div>
-              </div>
-              <div class="app-timeline-item">
-                <div class="app-timeline-dot"></div>
-                <div class="app-version-card">
-                  <div class="app-card-top">
-                    <span class="app-version-tag">V6</span>
-                    <span class="app-version-time">前天 15:47</span>
-                  </div>
-                  <div class="app-version-note">修复购物车结算页面的价格计算 Bug</div>
-                  <div class="app-change-stats">
-                    <span class="stat-added">- 1 个将清里</span>
-                    <span class="stat-modified">~ 8 个将倒滚</span>
-                    <span class="stat-deleted">+ 0 个将补回</span>
-                  </div>
-                  <div class="app-card-actions">
-                    <button class="app-btn-ghost">📂 查看</button>
-                    <button class="app-btn-action">📥 导出</button>
-                  </div>
-                </div>
-              </div>
-              <div class="app-timeline-item">
-                <div class="app-timeline-dot"></div>
-                <div class="app-version-card">
-                  <div class="app-card-top">
-                    <span class="app-version-tag">V5</span>
-                    <span class="app-version-time">2026-06-08 10:22</span>
-                  </div>
-                  <div class="app-version-note">新增商品详情页的图片轮播与评论区</div>
-                  <div class="app-change-stats">
-                    <span class="stat-added">- 3 个将清里</span>
-                    <span class="stat-modified">~ 15 个将倒滚</span>
-                    <span class="stat-deleted">+ 2 个将补回</span>
-                  </div>
-                  <div class="app-card-actions">
-                    <button class="app-btn-ghost">📂 查看</button>
-                    <button class="app-btn-action">📥 导出</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="app-statusbar">
-          <span>● 本地存储就绪</span>
-          <span>占用 48.2 MB</span>
-          <span>自动过滤: node_modules · target · build · .DS_Store</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+        // 第二个下拉菜单
+        const downloadBtn2 = document.getElementById('downloadBtn2');
+        const dropdownMenu2 = document.getElementById('dropdownMenu2');
+        const dropdownIcon2 = document.getElementById('dropdownIcon2');
 
-<!-- =============== 2. TECHNICAL COMPARISON =============== -->
-<section class="section" id="principle">
-  <div class="container">
-    <div class="section-head">
-      <div class="section-index">01 / Principle</div>
-      <h2>为什么备份不再需要<br />拷贝整份项目 100 次</h2>
-      <p>传统备份把文件物理复制到另一个目录，100 次备份意味着 100 份冗余副本。LocalMilestone 只记录「哪些文件发生了什么变化」。</p>
-    </div>
+        // 切换下拉菜单显示
+        function toggleDropdown(menu, icon) {
+            menu.classList.toggle('show');
+            icon.style.transform = menu.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
+        }
 
-    <div class="compare">
-      <div class="compare-head">
-        <div class="compare-col compare-col-trad">
-          <span class="compare-tag">传统项目复制备份</span>
-          <h3>COPY × N</h3>
-        </div>
-        <div class="compare-col compare-col-lm">
-          <span class="compare-tag highlight">LocalMilestone · 账本增量</span>
-          <h3>BASE + Δlog</h3>
-        </div>
-      </div>
+        // 关闭所有下拉菜单
+        function closeAllDropdowns() {
+            dropdownMenu.classList.remove('show');
+            dropdownMenu2.classList.remove('show');
+            dropdownIcon.style.transform = 'rotate(0)';
+            dropdownIcon2.style.transform = 'rotate(0)';
+        }
 
-      <div class="compare-row">
-        <div class="compare-key">磁盘占用<br /><small>1GB 项目备份 100 次</small></div>
-        <div class="compare-col compare-col-trad">
-          <div class="bar-wrap">
-            <div class="bar bar-trad"><span>100 GB</span></div>
-          </div>
-          <div class="compare-note bad">整份拷贝，版本越多越臃肿 ❌</div>
-        </div>
-        <div class="compare-col compare-col-lm">
-          <div class="bar-wrap">
-            <div class="bar bar-lm"><span>1 GB + 几 KB</span></div>
-          </div>
-          <div class="compare-note good">基准快照 1 份 + SQLite 流水账 🍏</div>
-        </div>
-      </div>
+        // 第一个按钮点击事件
+        downloadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDropdown(dropdownMenu, dropdownIcon);
+        });
 
-      <div class="compare-row">
-        <div class="compare-key">系统负载<br /><small>备份瞬间的 CPU / IO</small></div>
-        <div class="compare-col compare-col-trad">
-          <div class="load load-trad">
-            <span class="load-bar" style="--h: 92%"></span>
-            <span class="load-bar" style="--h: 84%"></span>
-            <span class="load-bar" style="--h: 96%"></span>
-            <span class="load-bar" style="--h: 78%"></span>
-            <span class="load-bar" style="--h: 88%"></span>
-            <span class="load-bar" style="--h: 94%"></span>
-          </div>
-          <div class="compare-note bad">搬运大文件，系统瞬间卡顿 ❌</div>
-        </div>
-        <div class="compare-col compare-col-lm">
-          <div class="load load-lm">
-            <span class="load-bar" style="--h: 4%"></span>
-            <span class="load-bar" style="--h: 6%"></span>
-            <span class="load-bar" style="--h: 3%"></span>
-            <span class="load-bar" style="--h: 8%"></span>
-            <span class="load-bar" style="--h: 5%"></span>
-            <span class="load-bar" style="--h: 7%"></span>
-          </div>
-          <div class="compare-note good">毫秒级写入流水账，无感运行 🍏</div>
-        </div>
-      </div>
+        // 第二个按钮点击事件
+        downloadBtn2.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDropdown(dropdownMenu2, dropdownIcon2);
+        });
 
-      <div class="compare-row">
-        <div class="compare-key">版本溯源<br /><small>改动的颗粒度与回滚</small></div>
-        <div class="compare-col compare-col-trad">
-          <div class="diff diff-trad">
-            <code>project-v1/</code>
-            <code>project-v2/</code>
-            <code>project-v3/</code>
-            <code>project-v4/ …</code>
-          </div>
-          <div class="compare-note bad">两个文件夹之间谁也说不清改了什么 ❌</div>
-        </div>
-        <div class="compare-col compare-col-lm">
-          <div class="diff diff-lm">
-            <span class="op-chip op-chip-add">ADD</span>
-            <span class="op-chip op-chip-mod">MODIFY</span>
-            <span class="op-chip op-chip-del">DELETE</span>
-            <span class="op-chip op-chip-mov">MOVE</span>
-            <span class="op-chip op-chip-ren">RENAME</span>
-          </div>
-          <div class="compare-note good">5 种原子算子精准标记，一键穿越 🍏</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+        // 点击页面其他地方关闭下拉菜单
+        document.addEventListener('click', closeAllDropdowns);
 
-<!-- =============== 3. FEATURE MATRIX =============== -->
-<section class="section section-dark" id="features">
-  <div class="container">
-    <div class="section-head align-left">
-      <div class="section-index light">02 / Features</div>
-      <h2>四大核心功能，<br />把版本控制简化到只剩一行账本</h2>
-    </div>
+        // 下载版本
+        function downloadVersion(version) {
+            closeAllDropdowns();
+            // 跳转到百度网盘下载链接
+            window.open('https://pan.baidu.com/share/init?surl=bHs6--SJM5QeCFc7seCQ6g&pwd=auk8', '_blank');
+        }
 
-    <div class="feature-grid">
-      <!-- Card A · 快照系统 -->
-      <article class="card card-a">
-        <div class="card-tag">A · 增量快照系统</div>
-        <h3>只备份变化的文件</h3>
-        <p>每次创建快照时，Rust 核心扫描工作目录与最新快照的差异，仅备份变化的文件到 History/V{n}/ 目录。SQLite 账本记录每条变更的版本号、路径、哈希值、操作类型。</p>
-        <ul class="kv">
-          <li><span>基准快照</span><b>1 份</b></li>
-          <li><span>增量备份</span><b>仅变化文件</b></li>
-          <li><span>账本写入</span><b>append-only</b></li>
-        </ul>
-        <div class="card-viz viz-topo" aria-hidden="true">
-          <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg">
-            <g fill="none" stroke="currentColor" stroke-width="1">
-              <circle cx="40" cy="60" r="6" class="node"/>
-              <circle cx="120" cy="30" r="5" class="node"/>
-              <circle cx="120" cy="60" r="5" class="node"/>
-              <circle cx="120" cy="90" r="5" class="node"/>
-              <circle cx="210" cy="15" r="4" class="node leaf"/>
-              <circle cx="210" cy="45" r="4" class="node leaf"/>
-              <circle cx="210" cy="75" r="4" class="node leaf"/>
-              <circle cx="210" cy="105" r="4" class="node leaf"/>
-              <circle cx="290" cy="30" r="3" class="node dot"/>
-              <circle cx="290" cy="60" r="3" class="node dot"/>
-              <circle cx="290" cy="90" r="3" class="node dot"/>
-              <path d="M46 60 L115 30 M46 60 L115 60 M46 60 L115 90"/>
-              <path d="M125 30 L205 15 M125 30 L205 45"/>
-              <path d="M125 60 L205 75"/>
-              <path d="M125 90 L205 105"/>
-              <path d="M215 15 L285 30 M215 45 L285 60 M215 105 L285 90"/>
-            </g>
-            <text x="160" y="118" class="svg-label">VFS · virtual file tree</text>
-          </svg>
-        </div>
-      </article>
+        // 解决办法弹窗
+        const solutionLink = document.getElementById('solutionLink');
+        const solutionModal = document.getElementById('solutionModal');
+        const modalClose = document.getElementById('modalClose');
 
-      <!-- Card B · AI 解读 -->
-      <article class="card card-b" id="aiCard">
-        <div class="ai-frame">
-          <div class="ai-glow"></div>
-          <div class="ai-inner">
-            <div class="card-tag light">B · 本地 AI 解读</div>
-            <h3 class="light">Gemma 本地推理 · 流式输出</h3>
-            <p class="light">所有模型在本机安全运行，零代码上传。AI 实时审计账本，生成「逐字吐字」的快照日志大白话总结。支持快照总结、项目概况、文件解读三种粒度。</p>
+        function openModal() {
+            solutionModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
-            <div class="ai-stream" id="aiStream" aria-label="AI 代码更新总结逐字吐字输出">
-              <div class="ai-stream-head">
-                <span class="ai-dot"></span>
-                <span>local-llm · streaming</span>
-                <span class="ai-mono">tokens/s</span>
-              </div>
-              <div class="ai-stream-body" id="aiStreamBody"></div>
-              <div class="ai-stream-foot">
-                <span>audit range: t₃₇ → t₅₂</span>
-                <span>2 files modified · 1 file added</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
+        function closeModal() {
+            solutionModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
-      <!-- Card C · 版本对比 -->
-      <article class="card card-c">
-        <div class="card-tag">C · 快照对比</div>
-        <h3>左右目录树精准比对</h3>
-        <p>点击任意快照的「查看变更」按钮，进入对比详情视图。左右两栏显示目标版本与最新版本的目录树，颜色高亮区分变更类型：蓝色=新增、橙色=修改、红色=删除、绿色=重命名。</p>
-        <ul class="kv">
-          <li><span>对比视图</span><b>左右双栏</b></li>
-          <li><span>颜色高亮</span><b>4 类变更</b></li>
-          <li><span>结果缓存</span><b>避免重复计算</b></li>
-        </ul>
-        <div class="card-viz viz-rollback" aria-hidden="true">
-          <div class="roll-track">
-            <span class="roll-base">BASE</span>
-            <span class="roll-node" style="--i:1">t₁</span>
-            <span class="roll-node" style="--i:2">t₂</span>
-            <span class="roll-node" style="--i:3">t₃</span>
-            <span class="roll-node active" style="--i:4">t₄</span>
-            <span class="roll-node" style="--i:5">t₅</span>
-            <span class="roll-node" style="--i:6">t₆</span>
-            <span class="roll-arrow">↪ export</span>
-          </div>
-          <div class="roll-meta">reconstruct = base + ∑(Δ₁..Δ₄)</div>
-        </div>
-      </article>
+        solutionLink.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openModal();
+        });
 
-      <!-- Card D · 回滚恢复 -->
-      <article class="card card-d">
-        <div class="card-tag">D · 无痕物理回滚</div>
-        <h3>累积变更代价统计 · 一键导出</h3>
-        <p>恢复到历史版本时，系统计算「需要清里的文件数」「需要倒滚的文件数」「需要补回的文件数」。回滚结果导出到用户指定目录，不触碰工作目录。</p>
-        <ul class="kv">
-          <li><span>回滚影响</span><b>仅目标目录</b></li>
-          <li><span>校验算法</span><b>SHA-256</b></li>
-          <li><span>导出方式</span><b>独立副本</b></li>
-        </ul>
-        <div class="card-viz" aria-hidden="true">
-          <div class="rollback-flow">
-            <div class="rf-item"><span class="rf-op del">-清里</span><span class="rf-count">6</span></div>
-            <div class="rf-item"><span class="rf-op mod">~倒滚</span><span class="rf-count">23</span></div>
-            <div class="rf-item"><span class="rf-op add">+补回</span><span class="rf-count">4</span></div>
-            <div class="rf-item"><span class="rf-op ren">=改名</span><span class="rf-count">2</span></div>
-          </div>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
+        modalClose.addEventListener('click', closeModal);
 
-<!-- =============== 4. UI PREVIEW =============== -->
-<section class="section" id="preview">
-  <div class="container">
-    <div class="section-head">
-      <div class="section-index">03 / Interface</div>
-      <h2>快照对比详情</h2>
-      <p>左右两栏显示目标版本与最新版本的目录树，下方平铺 3 类原子差异变更块，精准呈现版本间的变化。</p>
-    </div>
+        solutionModal.addEventListener('click', (e) => {
+            if (e.target === solutionModal) {
+                closeModal();
+            }
+        });
 
-    <div class="view-window">
-      <!-- 标题栏 -->
-      <div class="view-titlebar">
-        <div class="view-traffic-lights">
-          <div class="view-light close"></div>
-          <div class="view-light min"></div>
-          <div class="view-light max"></div>
-        </div>
-        <button class="view-btn-back">
-          <span class="view-back-icon">‹</span>
-          <span>返回</span>
-        </button>
-        <div class="view-title-text">快照对比：V4 vs V8</div>
-      </div>
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && solutionModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
 
-      <!-- 主内容区 -->
-      <div class="view-content">
-        <!-- 右侧主内容 -->
-        <div class="view-main-panel">
+        // 复制代码
+        const copyBtn = document.getElementById('copyBtn');
+        const codeBlock = document.getElementById('codeBlock');
 
-          <!-- 文件结构双栏标题 -->
-          <div class="view-dir-compare-title">文件目录对比 V4~V8</div>
-
-          <!-- 文件结构双栏 -->
-          <div class="view-structure-grid">
-            <!-- V4 已选快照 -->
-            <div class="view-structure-panel target">
-              <div class="view-panel-head">
-                <span>已选快照 V4</span>
-                <span class="view-panel-head-right">2026-5-18 09:12:03</span>
-              </div>
-              <div class="view-file-tree">
-                <!-- src 文件夹 -->
-                <div class="view-tree-item folder">
-                  <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                  <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                  src
-                </div>
-                <div class="view-tree-children">
-                  <div class="view-tree-item folder">
-                    <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                    services
-                  </div>
-                  <div class="view-tree-children">
-                    <div class="view-tree-item file">auth.service.ts</div>
-                    <div class="view-tree-item file">user.service.ts</div>
-                    <div class="view-tree-item file">api-client.ts</div>
-                  </div>
-                  <div class="view-tree-item folder">
-                    <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                    utils
-                  </div>
-                  <div class="view-tree-children">
-                    <div class="view-tree-item file" style="color: #EB4834;">helpers.ts</div>
-                    <div class="view-tree-item file">validator.ts</div>
-                  </div>
-                  <div class="view-tree-item folder">
-                    <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                    styles
-                  </div>
-                  <div class="view-tree-children">
-                    <div class="view-tree-item file">base.css</div>
-                  </div>
-                </div>
-                <!-- public 文件夹 -->
-                <div class="view-tree-item folder">
-                  <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                  <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                  public
-                </div>
-                <div class="view-tree-children">
-                  <div class="view-tree-item file">logo.svg</div>
-                  <div class="view-tree-item file">index.html</div>
-                  <div class="view-tree-item file">favicon.ico</div>
-                </div>
-                <!-- 根目录文件 -->
-                <div class="view-tree-item file">package.json</div>
-                <div class="view-tree-item file">tsconfig.json</div>
-                <div class="view-tree-item file">webpack.config.js</div>
-              </div>
-              <div class="view-tree-summary">5 个文件夹 和 14 个文件</div>
-            </div>
-
-            <!-- V8 最新完整快照 -->
-            <div class="view-structure-panel">
-              <div class="view-panel-head">
-                <span>最新完整快照 V8</span>
-                <span class="view-panel-head-right">2026-6-08 14:25:06</span>
-              </div>
-              <div class="view-file-tree">
-                <!-- src 文件夹 -->
-                <div class="view-tree-item folder" style="color: #F0912A;">
-                  <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke="#F0912A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                  <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="#F0912A" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                  src
-                </div>
-                <div class="view-tree-children">
-                  <div class="view-tree-item folder" style="color: #F0912A;">
-                    <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke="#F0912A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="#F0912A" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                    services
-                  </div>
-                  <div class="view-tree-children">
-                    <div class="view-tree-item file changed">auth.service.ts</div>
-                    <div class="view-tree-item file">user.service.ts</div>
-                    <div class="view-tree-item file">api-client.ts</div>
-                    <div class="view-tree-item file">oauth.service.ts</div>
-                  </div>
-                  <div class="view-tree-item folder">
-                    <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                    components
-                  </div>
-                  <div class="view-tree-children">
-                    <div class="view-tree-item file" style="color: #F0912A;">LoginPanel.tsx</div>
-                    <div class="view-tree-item file">Dashboard.tsx</div>
-                    <div class="view-tree-item file">Settings.tsx</div>
-                  </div>
-                  <div class="view-tree-item folder">
-                    <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                    utils
-                  </div>
-                  <div class="view-tree-children">
-                    <div class="view-tree-item file">helpers.ts</div>
-                    <div class="view-tree-item file">validator.ts</div>
-                    <div class="view-tree-item file">token-helper.ts</div>
-                  </div>
-                  <div class="view-tree-item folder">
-                    <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                    styles
-                  </div>
-                  <div class="view-tree-children">
-                    <div class="view-tree-item file">base.css</div>
-                    <div class="view-tree-item file">oauth-theme.css</div>
-                    <div class="view-tree-item file">responsive.css</div>
-                  </div>
-                </div>
-                <!-- public 文件夹 -->
-                <div class="view-tree-item folder">
-                  <svg class="view-tree-chevron" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                  <svg class="view-tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
-                  public
-                </div>
-                <div class="view-tree-children">
-                  <div class="view-tree-item file">logo.svg</div>
-                  <div class="view-tree-item file">index.html</div>
-                  <div class="view-tree-item file">favicon.ico</div>
-                  <div class="view-tree-item file">banner.png</div>
-                </div>
-                <!-- 根目录文件 -->
-                <div class="view-tree-item file">package.json</div>
-                <div class="view-tree-item file">tsconfig.json</div>
-                <div class="view-tree-item file">webpack.config.js</div>
-                <div class="view-tree-item file">.eslintrc</div>
-              </div>
-              <div class="view-tree-summary">6 个文件夹 和 22 个文件</div>
-            </div>
-          </div>
-
-          <!-- 变更详情 -->
-          <div class="view-changes-section">
-            <div class="view-changes-title">回滚到 V4 历史节点，当前项目 V8 将发生以下变化</div>
-
-            <!-- 新增 -->
-            <div class="view-change-block added">
-              <div class="view-change-head">
-                <div class="view-change-head-left">
-                  <svg class="view-status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                  <span>新增清里</span>
-                  <span class="view-change-desc">以下文件是 V4 之后新写的（最新 V8 才存在），回滚后将从项目中【删除】</span>
-                </div>
-                <span class="view-change-count">12 个文件差异</span>
-              </div>
-              <div class="view-change-body">
-                <div class="view-change-col">
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/components/LoginPanel.tsx</span>
-                    </div>
-                    <span class="view-status-tag new">256 行</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="13" r="2.5"/><circle cx="6" cy="12" r="2.5"/><path d="M12 22a10 10 0 1 1 10-10c0 2-2 3-3.5 3s-3.5 1-3.5 2-1.5 2-3 2-3 0-3 3"/></svg>
-                      <span>src/styles/oauth-theme.css</span>
-                    </div>
-                    <span class="view-status-tag new">82 行</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/services/oauth.service.ts</span>
-                    </div>
-                    <span class="view-status-tag new">198 行</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/components/Dashboard.tsx</span>
-                    </div>
-                    <span class="view-status-tag new">312 行</span>
-                  </div>
-                </div>
-                <div class="view-change-col">
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/components/Settings.tsx</span>
-                    </div>
-                    <span class="view-status-tag new">新文件</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="13" r="2.5"/><circle cx="6" cy="12" r="2.5"/><path d="M12 22a10 10 0 1 1 10-10c0 2-2 3-3.5 3s-3.5 1-3.5 2-1.5 2-3 2-3 0-3 3"/></svg>
-                      <span>src/styles/responsive.css</span>
-                    </div>
-                    <span class="view-status-tag new">新文件</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                      <span>public/banner.png</span>
-                    </div>
-                    <span class="view-status-tag new">新文件</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>.eslintrc</span>
-                    </div>
-                    <span class="view-status-tag new">新文件</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 修改 -->
-            <div class="view-change-block modified">
-              <div class="view-change-head">
-                <div class="view-change-head-left">
-                  <svg class="view-status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  <span>版本倒滚</span>
-                  <span class="view-change-desc">以下文件在后续被你修改过，回滚后内容将【倒退覆盖】回 V4 状态</span>
-                </div>
-                <span class="view-change-count">28 个文件差异</span>
-              </div>
-              <div class="view-change-body">
-                <div class="view-change-col">
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                      <span>src/services/auth.service.ts</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+124</span>
-                      <span class="view-removed-num">-82</span>
-                    </div>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/utils/token-helper.ts</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+45</span>
-                      <span class="view-removed-num">-12</span>
-                    </div>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/utils/validator.ts</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+32</span>
-                      <span class="view-removed-num">-18</span>
-                    </div>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/styles/base.css</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+58</span>
-                      <span class="view-removed-num">-24</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="view-change-col">
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/services/user.service.ts</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+76</span>
-                      <span class="view-removed-num">-45</span>
-                    </div>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/services/api-client.ts</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+88</span>
-                      <span class="view-removed-num">-32</span>
-                    </div>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                      <span>webpack.config.js</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+15</span>
-                      <span class="view-removed-num">-8</span>
-                    </div>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                      <span>package.json</span>
-                    </div>
-                    <div class="view-file-meta">
-                      <span class="view-added-num">+8</span>
-                      <span class="view-removed-num">-3</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 删除 -->
-            <div class="view-change-block deleted">
-              <div class="view-change-head">
-                <div class="view-change-head-left">
-                  <svg class="view-status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
-                  <span>缺失补回</span>
-                  <span class="view-change-desc">以下文件在 V4 之后被你删除了，回滚后将从历史库中【补回/复活】</span>
-                </div>
-                <span class="view-change-count">3 个文件差异</span>
-              </div>
-              <div class="view-change-body">
-                <div class="view-change-col">
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                      <span>old-auth-backup.js</span>
-                    </div>
-                    <span class="view-status-tag removed">320 行</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/legacy-session.js</span>
-                    </div>
-                    <span class="view-status-tag removed">88 行</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                      <span>config/old-env.json</span>
-                    </div>
-                    <span class="view-status-tag removed">24 行</span>
-                  </div>
-                </div>
-                <div class="view-change-col">
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                      <span>src/components/OldPanel.tsx</span>
-                    </div>
-                    <span class="view-status-tag removed">164 行</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="13" r="2.5"/><circle cx="6" cy="12" r="2.5"/><path d="M12 22a10 10 0 1 1 10-10c0 2-2 3-3.5 3s-3.5 1-3.5 2-1.5 2-3 2-3 0-3 3"/></svg>
-                      <span>src/styles/old-theme.css</span>
-                    </div>
-                    <span class="view-status-tag removed">46 行</span>
-                  </div>
-                  <div class="view-file-row">
-                    <div class="view-file-row-left">
-                      <svg class="view-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                      <span>assets/old-logo.png</span>
-                    </div>
-                    <span class="view-status-tag removed">1 个文件</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- =============== 5. PRIVACY & FOOTER =============== -->
-<section class="section section-dark" id="privacy">
-  <div class="container footer-grid">
-    <div class="footer-left">
-      <div class="section-index light">04 / Infrastructure</div>
-      <h2 class="light">100% 本地运行 · 0 数据上传</h2>
-      <p class="light">账本文件位于 <code>~/Library/Application Support/LocalMilestone/</code>，数据基底完全由你掌控。模型权重、代码、审计日志均不经过任何云端。</p>
-      <ul class="pill-list">
-        <li>SwiftUI · macOS 原生界面</li>
-        <li>Rust (UniFFI) · 高性能核心</li>
-        <li>SQLite · 单文件账本</li>
-        <li>Gemma 本地 LLM · 零上传</li>
-        <li>no-telemetry · 完全离线</li>
-      </ul>
-      <div class="dropdown">
-        <a href="#" class="btn btn-primary btn-lg dropdown-toggle" id="download">
-          <span class="btn-label">免费下载</span>
-          <span class="btn-sub">macOS</span>
-          <span class="dropdown-arrow">▼</span>
-        </a>
-        <div class="dropdown-menu">
-          <a href="https://pan.baidu.com/s/1jmM-uuubrsCYLFpYFIBR9g?pwd=aw5u" class="dropdown-item">Apple Silicon</a>
-          <a href="https://pan.baidu.com/s/1jmM-uuubrsCYLFpYFIBR9g?pwd=aw5u" class="dropdown-item">Intel</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-right">
-      <div class="sig-block">
-        <div class="sig-title">data-ownership matrix</div>
-        <dl>
-          <dt>SQLite 账本</dt><dd>本机 · 可导出</dd>
-          <dt>快照文件</dt><dd>本机 · 可迁移</dd>
-          <dt>模型权重</dt><dd>本机 · 不联网</dd>
-          <dt>使用统计</dt><dd>无 · 遥测关闭</dd>
-        </dl>
-      </div>
-      <div class="sig-block">
-        <div class="sig-title">tech stack</div>
-        <ul class="chk">
-          <li>✓ SwiftUI 前端（macOS App）</li>
-          <li>✓ Rust 核心（LocalMilestoneCore）</li>
-          <li>✓ UniFFI 跨语言绑定</li>
-          <li>✓ llama.cpp 推理引擎</li>
-          <li>✓ FSEvent 工作区监控</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <footer class="container base-foot">
-    <span>© 2026 LocalMilestone</span>
-    <span>Swift + Rust · Apple Silicon</span>
-  </footer>
-</section>
-
-<script src="script.js"></script>
+        copyBtn.addEventListener('click', () => {
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制';
+                copyBtn.style.background = '#10b981';
+                copyBtn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'transparent';
+                    copyBtn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }, 1500);
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制';
+                copyBtn.style.background = '#10b981';
+                copyBtn.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'transparent';
+                    copyBtn.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }, 1500);
+            });
+        });
+    </script>
 </body>
 </html>
